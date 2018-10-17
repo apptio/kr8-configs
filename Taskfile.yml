@@ -1,0 +1,60 @@
+{
+   "output": "prefixed",
+   "tasks": {
+      "default": {
+         "cmds": [
+            "kr8-helpers check-environment",
+            {
+               "task": "gke"
+            },
+            {
+               "task": "digitalocean"
+            }
+         ]
+      },
+      "digitalocean": {
+         "cmds": [
+            {
+               "task": "digitalocean_taskfile"
+            },
+            "task -d tmp/digitalocean default"
+         ],
+         "desc": "generate components for digitalocean"
+      },
+      "digitalocean_taskfile": {
+         "cmds": [
+            "mkdir -p tmp/digitalocean",
+            "kr8 jsonnet render --cluster digitalocean --format yaml templates/task-generate-cluster-sequential.jsonnet > tmp/digitalocean/Taskfile.yml"
+         ],
+         "desc": "generate task file in tmp directory for cluster: digitalocean"
+      },
+      "gke": {
+         "cmds": [
+            {
+               "task": "gke_taskfile"
+            },
+            "task -d tmp/gke default"
+         ],
+         "desc": "generate components for gke"
+      },
+      "gke_taskfile": {
+         "cmds": [
+            "mkdir -p tmp/gke",
+            "kr8 jsonnet render --cluster gke --format yaml templates/task-generate-cluster-sequential.jsonnet > tmp/gke/Taskfile.yml"
+         ],
+         "desc": "generate task file in tmp directory for cluster: gke"
+      },
+      "taskfiles": {
+         "cmds": [
+            {
+               "task": "gke_taskfile"
+            },
+            {
+               "task": "digitalocean_taskfile"
+            }
+         ],
+         "desc": "generate task files for all clusters"
+      }
+   },
+   "version": "2"
+}

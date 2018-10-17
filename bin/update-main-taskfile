@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Updates the main Taskfile for generating all cluster components
+
+set -eu
+
+jsonnet templates/task-generate-allclusters.jsonnet  > Taskfile.yml

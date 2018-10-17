@@ -1,0 +1,32 @@
+#!/bin/bash
+
+cluster="$1"
+task=$(which task)
+
+if [ -z "$task" ]
+then
+  echo "Must have task installed"
+  echo "See https://taskfile.org/#/installation"
+  exit 1
+fi
+
+if [ -z "$cluster" ]
+then
+  echo "Usage: $0 {cluster}"
+  echo "Available clusters:"
+  task -l | grep components | awk '{print $2}' | tr -d ':'
+  echo "all"
+  exit 1
+fi
+
+export KR8_BASE=$(pwd)
+export PATH=$PATH:$KR8_BASE/bin
+
+if [ "$cluster" == "all" ];
+then
+  cluster=default
+fi
+
+task $cluster
+
+

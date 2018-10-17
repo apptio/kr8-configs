@@ -1,0 +1,20 @@
+version: 2
+
+vars:
+  KR8_COMPONENT: nginx_ingress_default
+  CHART_VER: 0.20.1
+  CHART_NAME: nginx-ingress
+
+tasks:
+  fetch:
+    desc: "fetch component dependencies"
+    cmds:
+      - rm -fr charts; mkdir charts
+      - helm fetch --repo https://kubernetes-charts.storage.googleapis.com --untar --untardir ./charts --version "{{.CHART_VER}}" "{{.CHART_NAME}}"
+
+
+  generate:
+    desc: "generate"
+    cmds:
+      - KR8_COMPONENT={{.KR8_COMPONENT}} kr8-helpers clean-output
+      - KR8_COMPONENT={{.KR8_COMPONENT}} kr8-helpers helm-render-with-patch "{{.CHART_NAME}}" patches.jsonnet

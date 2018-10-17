@@ -1,0 +1,22 @@
+version: 2
+
+vars:
+  KR8_COMPONENT: cert_manager
+  CHART_VER: v0.4.0
+  CHART_NAME: cert-manager
+
+tasks:
+  fetch:
+    desc: "fetch component dependencies"
+    cmds:
+      - rm -fr charts; mkdir charts
+      - helm fetch --repo https://kubernetes-charts.storage.googleapis.com --untar --untardir ./charts --version "{{.CHART_VER}}" "{{.CHART_NAME}}"
+
+
+  generate:
+    desc: "generate"
+    cmds:
+      - KR8_COMPONENT={{.KR8_COMPONENT}} kr8-helpers clean-output
+      - KR8_COMPONENT={{.KR8_COMPONENT}} kr8-helpers helm-render "{{.CHART_NAME}}"
+        #- KR8_COMPONENT={{.KR8_COMPONENT}} kr8-helpers jsonnet-render secrets.jsonnet
+

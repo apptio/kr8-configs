@@ -1,0 +1,20 @@
+version: 2
+
+vars:
+  KR8_COMPONENT: sealed_secrets
+  SRC_VERSION: v0.7.0
+
+tasks:
+  fetch:
+    desc: "fetch component dependencies"
+    cmds:
+      - mkdir -p vendored; rm -f vendored/*
+      - wget --quiet -N https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.SRC_VERSION}}/sealedsecret-crd.yaml -O vendored/sealedsecret-crd.yaml
+      - wget --quiet -N https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.SRC_VERSION}}/controller.yaml -O vendored/controller.yaml
+
+
+  generate:
+    desc: "generate"
+    cmds:
+      - KR8_COMPONENT={{.KR8_COMPONENT}} kr8-helpers clean-output
+      - KR8_COMPONENT={{.KR8_COMPONENT}} kr8-helpers yaml-install vendored/sealedsecret-crd.yaml vendored/controller.yaml
